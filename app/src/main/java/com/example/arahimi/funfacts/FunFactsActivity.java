@@ -17,31 +17,59 @@ import java.util.Random;
 
 public class FunFactsActivity extends AppCompatActivity {
 
+    private static final String KEY_FACT = "KEY_FACT";
+    private static final String KEY_COLOR =  "KEY_COLOR";
     private FactBook mFactBook = new FactBook();
     private ColorWheel mColorWheel = new ColorWheel();
+    private Button mShowFactButton;
+    private TextView mFactLabel;
+    private RelativeLayout mFunFactsLayout;
+    private String mFact = mFactBook.mfacts[0];
+    private int mColor = Color.parseColor(mColorWheel.mColors[8]);
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(KEY_FACT, mFact);
+        outState.putInt(KEY_COLOR, mColor);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mFact = savedInstanceState.getString(KEY_FACT);
+        mFactLabel.setText(mFact);
+        mColor = savedInstanceState.getInt(KEY_COLOR);
+        mFunFactsLayout.setBackgroundColor(mColor);
+        mShowFactButton.setTextColor(mColor);
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fun_facts);
 
-
-
         // Declare our View variables and assign the views from the layout file
-        final TextView factLabel = (TextView) findViewById(R.id.factTextView);
-        final Button showFactButton = (Button) findViewById(R.id.showFactButton);
-        final RelativeLayout funFactsLayout = (RelativeLayout) findViewById(R.id.funFactsLayout);
+        mFactLabel = (TextView) findViewById(R.id.factTextView);
+        mShowFactButton = (Button) findViewById(R.id.showFactButton);
+        mFunFactsLayout = (RelativeLayout) findViewById(R.id.funFactsLayout);
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String fact = mFactBook.getFact();
-                int color = mColorWheel.getColor();
-                factLabel.setText(fact);
-                funFactsLayout.setBackgroundColor(color);
-                showFactButton.setTextColor(color);
+                mFact = mFactBook.getFact();
+                mColor = mColorWheel.getColor();
+                mFactLabel.setText(mFact);
+                mFunFactsLayout.setBackgroundColor(mColor);
+                mShowFactButton.setTextColor(mColor);
             }
         };
-        showFactButton.setOnClickListener(listener);
+        mShowFactButton.setOnClickListener(listener);
 
     }
 }
